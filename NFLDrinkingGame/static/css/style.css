@@ -1,0 +1,783 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial Black', 'Arial Bold', sans-serif;
+    background: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Card deck stack effect - multiple layers */
+body::before,
+body::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    max-width: 550px;
+    height: 480px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 15px;
+    border: 3px solid #dc2626;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    top: 50%;
+    left: 50%;
+    pointer-events: none;
+    transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+body::before {
+    transform: translate(-50%, -50%) translateZ(-1px) rotate(-2deg);
+    opacity: 0.7;
+}
+
+body::after {
+    transform: translate(-50%, -50%) translateZ(-2px) rotate(1deg);
+    opacity: 0.5;
+}
+
+/* Deck lifting animation when card is discarding */
+body.deck-lifting::before {
+    transform: translate(-50%, -55%) translateZ(-1px) rotate(-2deg);
+}
+
+body.deck-lifting::after {
+    transform: translate(-50%, -60%) translateZ(-2px) rotate(1deg);
+}
+
+.container {
+    width: 100%;
+    max-width: 550px;
+    min-height: 480px;
+    perspective: 1500px;
+    position: relative;
+    z-index: 10;
+}
+
+.card {
+    width: 100%;
+    min-height: 480px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card.hidden {
+    display: none;
+}
+
+.card:not(.hidden):not(.discarding) {
+    z-index: 10;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d;
+}
+
+.card.flipping .card-inner {
+    transform: rotateY(720deg) translateY(-20px);
+}
+
+.card.discarding {
+    z-index: 1;
+}
+
+.card.discarding .card-inner {
+    animation: discardCard 1s ease-in-out forwards;
+}
+
+@keyframes discardCard {
+    0% {
+        transform: translateY(-5px) translateX(0) scale(1) rotateZ(0deg);
+        opacity: 1;
+    }
+    35% {
+        transform: translateY(-5px) translateX(700px) scale(1) rotateZ(10deg);
+        opacity: 1;
+    }
+    65% {
+        transform: translateY(-800px) translateX(700px) scale(0.9) rotateZ(5deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-800px) translateX(0) scale(0.91) rotateZ(-2deg);
+        opacity: 0.7;
+    }
+}
+
+.card.drawing .card-inner {
+    animation: drawCard 0.8s ease-out forwards;
+}
+
+@keyframes drawCard {
+    0% {
+        transform: translateY(-100vh) scale(0.8) rotateZ(10deg) rotateY(180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-25px) scale(0.95) rotateZ(5deg) rotateY(180deg);
+        opacity: 0.7;
+    }
+    75% {
+        transform: translateY(-5px) scale(1) rotateZ(0deg) rotateY(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-5px) scale(1) rotateZ(0deg) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+.card.flipping .card-inner {
+    transition: transform 0.5s ease;
+    transform: translateY(-5px) rotateY(0deg);
+}
+
+.card:not(.hidden):not(.discarding):not(.drawing) .card-inner {
+    transform: translateY(-5px);
+}
+
+.card-front {
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 15px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                0 0 0 3px #dc2626,
+                inset 0 0 20px rgba(220, 38, 38, 0.1);
+    backface-visibility: hidden;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: 3px solid #dc2626;
+}
+
+.card-front::before {
+    content: 'NFL DRINKING GAME';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #dc2626;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+
+.card-back-design {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-back-design::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(220, 38, 38, 0.1) 10px, rgba(220, 38, 38, 0.1) 20px),
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(220, 38, 38, 0.1) 10px, rgba(220, 38, 38, 0.1) 20px);
+    pointer-events: none;
+}
+
+.card-back-pattern {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border: 5px solid #dc2626;
+    border-radius: 50%;
+    opacity: 0.2;
+}
+
+h1 {
+    color: #fff;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+}
+
+h2 {
+    color: #fff;
+    font-size: 2em;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+}
+
+h3 {
+    color: #000;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.description {
+    color: #ccc;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 500px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    color: #fff;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1em;
+    border: 2px solid #dc2626;
+    border-radius: 10px;
+    transition: all 0.3s;
+    background: #2a2a2a;
+    color: #fff;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+}
+
+.btn-primary {
+    background: #dc2626;
+    color: white;
+    border: 2px solid #dc2626;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.6);
+    background: #b91c1c;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-large {
+    padding: 20px 60px;
+    font-size: 1.5em;
+}
+
+.team-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.btn-team {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border: 3px solid #444;
+    border-radius: 10px;
+    background: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    color: #fff;
+}
+
+.btn-team:hover {
+    border-color: #dc2626;
+    background: #333;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+}
+
+.btn-team.selected {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: white;
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+}
+
+.player-summary {
+    color: #ccc;
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-category {
+    padding: 30px 20px;
+    font-size: 1.1em;
+    border: 3px solid #444;
+    border-radius: 15px;
+    background: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.btn-category:hover {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+}
+
+.category-icon {
+    font-size: 2em;
+}
+
+.back-arrow {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    background: transparent;
+    border: 2px solid #dc2626;
+    color: #dc2626;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.back-arrow:hover {
+    background: #dc2626;
+    color: white;
+    transform: translateX(-3px);
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+}
+
+.event-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.btn-event {
+    padding: 20px;
+    font-size: 1.1em;
+    border: 3px solid #444;
+    border-radius: 10px;
+    background: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+}
+
+.btn-event:hover {
+    border-color: #dc2626;
+    background: #dc2626;
+    color: white;
+    transform: translateX(5px);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+}
+
+.result-card {
+    min-height: 480px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    cursor: pointer;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%) !important;
+}
+
+.result-card::before {
+    content: 'NFL DRINKING GAME';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #dc2626;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+}
+
+.result-header {
+    background: white;
+    padding: 30px;
+    border-radius: 15px 15px 0 0;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.result-body {
+    background: white;
+    padding: 40px;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 15px 15px;
+}
+
+.punishment {
+    color: #dc2626;
+    font-size: 2em;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.btn-finish {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    border-color: #dc2626;
+}
+
+.btn-finish:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+}
+
+.final-results {
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+.score-display {
+    font-size: 1.5em;
+    color: #fff;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.losers-section {
+    margin-top: 30px;
+}
+
+.losers-title {
+    color: #dc2626;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+}
+
+.loser-name {
+    color: #fff;
+    font-size: 1.3em;
+    margin: 10px 0;
+    padding: 15px;
+    background: #2a2a2a;
+    border: 2px solid #dc2626;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+}
+
+.everyone-drinks {
+    color: #dc2626;
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 30px;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.score-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: 2px solid #dc2626;
+    color: #dc2626;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.score-button:hover {
+    background: #dc2626;
+    color: white;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+}
+
+.team-play-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.btn-team-play {
+    width: 100%;
+    padding: 30px;
+    font-size: 1.5em;
+    border: 3px solid #444;
+    border-radius: 15px;
+    background: #2a2a2a;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    color: #fff;
+}
+
+.btn-team-play:hover {
+    border-color: #dc2626;
+    background: #dc2626;
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+}
+
+.scoreboard-content {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.score-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.score-item .rank {
+    font-size: 1.2em;
+    min-width: 50px;
+}
+
+.player-name-score {
+    flex: 1;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.player-team-score {
+    color: #999;
+    margin: 0 10px;
+}
+
+.player-points {
+    font-size: 1.3em;
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.winner-title {
+    color: #dc2626;
+    font-size: 1.8em;
+    margin: 30px 0 20px 0;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.8);
+}
+
+.winner-name {
+    color: #fff;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin: 20px 0;
+    text-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+}
+
+.winner-subtitle {
+    color: #ccc;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.final-scores-section {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.final-score-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin: 10px 0;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.final-score-item.winner-highlight {
+    border-color: #dc2626;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+}
+
+.final-points {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.tap-to-restart {
+    color: #999;
+    font-size: 0.9em;
+    margin-top: 30px;
+    font-style: italic;
+}
+
+/* Card waiting state - shows click prompt on card back */
+.card.waiting {
+    cursor: pointer;
+}
+
+.card.waiting .card-inner {
+    transform: translateY(-5px) rotateY(180deg);
+}
+
+.card.waiting .card-back-overlay {
+    display: flex;
+}
+
+.card-back-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 15px;
+    border: 3px solid #dc2626;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+    z-index: 5;
+}
+
+.card-back-overlay h1 {
+    margin-top: 0;
+    color: #fff;
+}
+
+.card-back-overlay h2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #dc2626;
+}
+
+.card-back-overlay p {
+    color: #dc2626;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 30px;
+    animation: pulse 1.5s infinite;
+}
+
+.card-back-overlay .card-back-pattern {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border: 5px solid #dc2626;
+    border-radius: 50%;
+    opacity: 0.2;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    .card-front {
+        padding: 30px 20px;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .punishment {
+        font-size: 1.5em;
+    }
+}
