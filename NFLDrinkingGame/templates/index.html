@@ -25,8 +25,11 @@
             <div class="card-inner">
                 <div class="card-back-overlay">
                     <div class="card-back-pattern"></div>
-                    <h1>NFL</h1>
-                    <h2>DRINKING GAME</h2>
+                    <div class="nfl-logo"></div>
+                    <div class="title-text">
+                        <h1>NFL</h1>
+                        <h2>DRINKING GAME</h2>
+                    </div>
                     <p>TAP TO CONTINUE</p>
                 </div>
                 <div class="card-front">
@@ -109,7 +112,9 @@
         <div class="card hidden" id="team-play-screen">
             <div class="card-inner">
                 <div class="card-front">
-                    <h2>Which Team Made the Play?</h2>
+                    <button class="back-arrow" onclick="backFromTeamPlay()">← Back</button>
+                    <h2 id="teamPlayTitle" style="margin-top: 10px;">Which Team Made the Play?</h2>
+                    <p class="description" id="teamPlayDescription"></p>
                     <div class="team-play-buttons">
                         <button class="btn-team-play" id="teamPlay1" onclick="selectTeamPlay(1)"></button>
                         <button class="btn-team-play" id="teamPlay2" onclick="selectTeamPlay(2)"></button>
@@ -123,7 +128,7 @@
             <div class="card-inner">
                 <div class="card-front">
                     <button class="back-arrow" onclick="backFromScoreboard()">← Back</button>
-                    <h2>Current Scores</h2>
+                    <h2 style="margin-top: 10px;">Current Scores</h2>
                     <div id="scoreboardContent" class="scoreboard-content"></div>
                 </div>
             </div>
@@ -134,6 +139,7 @@
             <div class="card-inner">
                 <div class="card-front">
                     <button class="score-button" onclick="showScoreboard()">📊 Scores</button>
+                    <button class="finish-button" onclick="showFinishConfirmation()">🏆</button>
                     <h2 style="margin-top: 10px;">Select a Category</h2>
                     <div class="category-grid">
                         <button class="btn-category" onclick="selectCategory('Defense')">
@@ -152,10 +158,23 @@
                             <span class="category-icon">🎯</span>
                             <span>Game Outcome</span>
                         </button>
-                        <button class="btn-category btn-finish" onclick="finishGame()">
-                            <span class="category-icon">🏆</span>
-                            <span>Finish Game</span>
-                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finish Confirmation Screen -->
+        <div class="card hidden" id="finish-confirmation-screen">
+            <div class="card-inner">
+                <div class="card-front">
+                    <h2>Finish Game?</h2>
+                    <p class="description">
+                        Are you sure you want to finish the game?<br>
+                        You'll need to enter the final score.
+                    </p>
+                    <div class="confirmation-buttons">
+                        <button class="btn-confirm" onclick="finishGame()">Yes, Finish</button>
+                        <button class="btn-cancel" onclick="backToCategories()">Keep Playing</button>
                     </div>
                 </div>
             </div>
@@ -166,7 +185,7 @@
             <div class="card-inner">
                 <div class="card-front">
                     <button class="back-arrow" onclick="backToCategories()">← Back</button>
-                    <h2 id="eventCategoryTitle">Select Event</h2>
+                    <h2 id="eventCategoryTitle" style="margin-top: 10px;">Select Event</h2>
                     <div class="event-grid" id="eventGrid">
                         <!-- Events will be populated dynamically -->
                     </div>
