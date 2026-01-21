@@ -36,8 +36,11 @@ function flipToScreen(currentScreen, nextScreen) {
             overlay.className = 'card-back-overlay';
             overlay.innerHTML = `
                 <div class="card-back-pattern"></div>
-                <h1>NFL</h1>
-                <h2>DRINKING GAME</h2>
+                <div class="nfl-logo"></div>
+                <div class="title-text">
+                    <h1>NFL</h1>
+                    <h2>DRINKING GAME</h2>
+                </div>
                 <p>TAP TO CONTINUE</p>
             `;
             next.querySelector('.card-inner').insertBefore(overlay, next.querySelector('.card-front'));
@@ -45,8 +48,29 @@ function flipToScreen(currentScreen, nextScreen) {
 
         // Wait for user click to flip card
         const handleClick = (e) => {
-            // Prevent clicks on buttons from triggering flip
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') {
+            // Prevent clicks on buttons, inputs, and interactive elements from triggering flip
+            if (e.target.tagName === 'BUTTON' ||
+                e.target.tagName === 'INPUT' ||
+                e.target.tagName === 'LABEL' ||
+                e.target.tagName === 'SELECT' ||
+                e.target.tagName === 'A' ||
+                e.target.closest('button') ||
+                e.target.closest('input') ||
+                e.target.closest('.btn-category') ||
+                e.target.closest('.btn-team') ||
+                e.target.closest('.btn-event') ||
+                e.target.closest('.btn-team-play') ||
+                e.target.closest('.score-button') ||
+                e.target.closest('.finish-button') ||
+                e.target.closest('.back-arrow')) {
+                return;
+            }
+
+            // Only allow clicks on the card-back-overlay or card background areas
+            if (!e.target.closest('.card-back-overlay') &&
+                e.target !== next &&
+                !e.target.classList.contains('card-inner') &&
+                !e.target.classList.contains('card-front')) {
                 return;
             }
 
@@ -264,6 +288,16 @@ function selectCategory(category) {
         eventGrid.appendChild(button);
     });
 
+    // Set category-specific description for team selection
+    const descriptions = {
+        'Defense': 'When selecting the team, select the team that made the play',
+        'Scoring': 'When selecting the team, select the team that scored',
+        'Referees': 'When selecting the team, select the team that got penalized',
+        'Game Outcome': 'When selecting the team, select the team that had the outcome happen to them'
+    };
+
+    document.getElementById('teamPlayDescription').textContent = descriptions[category] || '';
+
     // First show team play selection
     flipToScreen('category-screen', 'team-play-screen');
 }
@@ -349,9 +383,24 @@ function backFromScoreboard() {
     flipToScreen('scoreboard-screen', gameState.previousScreen);
 }
 
+// Go back from team play screen to category screen
+function backFromTeamPlay() {
+    flipToScreen('team-play-screen', 'category-screen');
+}
+
 // Go back from event screen to category screen
 function backToCategories() {
-    flipToScreen('event-screen', 'category-screen');
+    const fromScreen = document.querySelector('.card:not(.hidden)').id;
+    if (fromScreen === 'finish-confirmation-screen') {
+        flipToScreen('finish-confirmation-screen', 'category-screen');
+    } else {
+        flipToScreen('event-screen', 'category-screen');
+    }
+}
+
+// Show finish confirmation screen
+function showFinishConfirmation() {
+    flipToScreen('category-screen', 'finish-confirmation-screen');
 }
 
 // Finish game and show final score screen
@@ -360,7 +409,7 @@ function finishGame() {
     document.getElementById('team1ScoreLabel').textContent = `${gameState.team1} Score:`;
     document.getElementById('team2ScoreLabel').textContent = `${gameState.team2} Score:`;
 
-    flipToScreen('category-screen', 'final-score-screen');
+    flipToScreen('finish-confirmation-screen', 'final-score-screen');
 }
 
 // Submit final score and determine losers
