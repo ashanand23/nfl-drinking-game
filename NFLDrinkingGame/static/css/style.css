@@ -382,7 +382,7 @@ input[type="number"]:focus {
 
 .back-arrow {
     position: absolute;
-    top: 70px;
+    top: 20px;
     left: 20px;
     background: transparent;
     border: 2px solid #dc2626;
@@ -485,14 +485,48 @@ input[type="number"]:focus {
     line-height: 1.4;
 }
 
-.btn-finish {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-    border-color: #dc2626;
+.confirmation-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
 }
 
-.btn-finish:hover {
-    background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+.btn-confirm {
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border: 3px solid #dc2626;
+    border-radius: 10px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.btn-confirm:hover {
+    background: #b91c1c;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.6);
+}
+
+.btn-cancel {
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border: 3px solid #444;
+    border-radius: 10px;
+    background: #2a2a2a;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.btn-cancel:hover {
+    border-color: #dc2626;
+    background: #333;
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
 }
 
 .final-results {
@@ -555,8 +589,8 @@ input[type="number"]:focus {
     background: transparent;
     border: 2px solid #dc2626;
     color: #dc2626;
-    padding: 10px 20px;
-    font-size: 1em;
+    padding: 8px 16px;
+    font-size: 0.9em;
     border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
@@ -568,6 +602,33 @@ input[type="number"]:focus {
     background: #dc2626;
     color: white;
     box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+}
+
+.finish-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: 2px solid #dc2626;
+    color: #dc2626;
+    padding: 8px 12px;
+    font-size: 1.3em;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.finish-button:hover {
+    background: #dc2626;
+    color: white;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+    transform: scale(1.1);
 }
 
 .team-play-buttons {
@@ -727,24 +788,65 @@ input[type="number"]:focus {
     backface-visibility: hidden;
     transform: rotateY(180deg);
     z-index: 5;
+    padding: 40px;
 }
 
-.card-back-overlay h1 {
-    margin-top: 0;
+.card-back-overlay .nfl-logo {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.card-back-overlay .nfl-logo::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #013369 0%, #d50a0a 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.card-back-overlay .nfl-logo::after {
+    content: 'NFL';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5em;
+    font-weight: 900;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: Impact, 'Arial Black', sans-serif;
+    letter-spacing: 2px;
+}
+
+.card-back-overlay .title-text {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card-back-overlay .title-text h1 {
+    margin: 0;
     color: #fff;
+    font-size: 2em;
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
 }
 
-.card-back-overlay h2 {
-    margin-top: 10px;
-    margin-bottom: 10px;
+.card-back-overlay .title-text h2 {
+    margin: 10px 0 0 0;
     color: #dc2626;
+    font-size: 1.5em;
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
 }
 
 .card-back-overlay p {
     color: #dc2626;
     font-size: 1.2em;
     font-weight: bold;
-    margin-top: 30px;
+    margin-top: 20px;
     animation: pulse 1.5s infinite;
 }
 
@@ -753,11 +855,11 @@ input[type="number"]:focus {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 150px;
-    height: 150px;
-    border: 5px solid #dc2626;
+    width: 200px;
+    height: 200px;
+    border: 3px solid #dc2626;
     border-radius: 50%;
-    opacity: 0.2;
+    opacity: 0.1;
 }
 
 @media (max-width: 600px) {
